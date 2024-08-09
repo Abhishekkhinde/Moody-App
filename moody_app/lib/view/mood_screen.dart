@@ -23,6 +23,7 @@ class _MoodScreenState extends State<MoodScreen> {
     _controller = VideoPlayerController.asset("assets/${mood.video!}");
     _initializedVideoPlayer = _controller.initialize();
     _controller.play();
+    sliderValue = mood.rating;
     super.initState();
   }
 
@@ -63,8 +64,9 @@ class _MoodScreenState extends State<MoodScreen> {
               future: _initializedVideoPlayer,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
+                  return SizedBox(
+                    width: widths,
+                    height: heights * 0.3,
                     child: Center(
                       child: VideoPlayer(_controller),
                     ),
@@ -130,7 +132,13 @@ class _MoodScreenState extends State<MoodScreen> {
             GestureDetector(
               onTap: () {
                 widget.moods.first.rating = sliderValue;
-
+                setState(() {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Your response has been submitted"),
+                    ),
+                  );
+                });
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
                     return const SplashScreen();
